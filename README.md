@@ -1,2 +1,2 @@
 # 2019-Drifty
-2019 Offseason Code for Drifty
+Contributors tefloyd1215@gmail.com
