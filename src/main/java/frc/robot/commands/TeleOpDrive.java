@@ -12,8 +12,7 @@ import frc.robot.Robot;
 
 public class TeleOpDrive extends Command {
   public TeleOpDrive() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+    requires(Robot.drivetrain);
   }
 
   // Called just before this Command runs the first time

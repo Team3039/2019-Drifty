@@ -19,6 +19,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     oi = new OI();
+    // Robot.drivetrain.startup();
     System.out.println("Only True Led-Gends Will Know");
   }
 

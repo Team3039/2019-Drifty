@@ -26,7 +26,7 @@ public class Drivetrain extends Subsystem {
 
   public void JoystickControl(PS4Gamepad gp) {
     //Math
-    double r = Math.sqrt (Math.pow((Constants.L),2) + (Math.pow((Constants.L),2)));
+    double r = Math.sqrt (Constants.L * Constants.L) + (Constants.W * Constants.W);
     double strafeY = gp.getLeftYAxis() * Constants.y;
     double strafeX = gp.getLeftXAxis() * Constants.x;
     double rotationX = gp.getRightXAxis() * Constants.rot;
@@ -54,22 +54,30 @@ public class Drivetrain extends Subsystem {
   }
 
   public void driveModule(TalonSRX drive, TalonSRX rotation, double throttle, double angle) {
-    drive.set(ControlMode.PercentOutput, throttle);
-    turnModule(rotation, angle);
-  }
-
-  public void turnModule(TalonSRX rotation, double targetAngle) {
+    drive.set(ControlMode.PercentOutput, -throttle);
     rotation.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);    
-    //Pulses per Rev = 7
+    rotation.config_kP(0, 15);
+    rotation.config_kI(0, 0);
+    rotation.config_kD(0, 0);
+    rotation.config_kF(0, 0);
+    //Pulses per Rev = 7 for Hall Effect Encoder
+    //1656 Ticks per Rev on Swerve Module
+    rotation.configSelectedFeedbackCoefficient(.2174); //1656 / 360 degrees
 
-    rotation.config_kP(0, 1);
-    rotation.configSelectedFeedbackCoefficient(7, 0, 0);
-    // rotation.configPeakOutputForward(.95);
-    // rotation.configPeakOutputReverse(.95);
-    rotation.set(ControlMode.Position, targetAngle);
+    //angle value is returned from -1 to 1
+    double targetPosition = angle*360;
+
+
+    System.out.println(targetPosition);
+    rotation.set(ControlMode.Position, targetPosition); 
+   }
+
+  public void startup() {
+    flRot.setSelectedSensorPosition(0);
+    frRot.setSelectedSensorPosition(0);
+    rlRot.setSelectedSensorPosition(0);
+    rrRot.setSelectedSensorPosition(0);
   }
-
-
 
   @Override
   public void initDefaultCommand() {
