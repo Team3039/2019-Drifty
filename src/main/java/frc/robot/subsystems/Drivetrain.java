@@ -1,16 +1,13 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.robot.commands.TeleOpDrive;
 import frc.util.PS4Gamepad;
+import frc.util.SwerveModule;
 
 public class Drivetrain extends Subsystem {
 
@@ -18,29 +15,38 @@ public class Drivetrain extends Subsystem {
   public static double throttle = 0;
   public static double rotation = 0;
 
-  public TalonSRX flDrive = new TalonSRX(RobotMap.flDrv);
+  public TalonSRX flDrv = new TalonSRX(RobotMap.flDrv);
   public TalonSRX flRot = new TalonSRX(RobotMap.flRot);
 
-  public TalonSRX frDrive = new TalonSRX(RobotMap.frDrv);
+  public TalonSRX frDrv = new TalonSRX(RobotMap.frDrv);
   public TalonSRX frRot = new TalonSRX(RobotMap.frRot);
 
-  public TalonSRX rlDrive = new TalonSRX(RobotMap.rlDrv);
+  public TalonSRX rlDrv = new TalonSRX(RobotMap.rlDrv);
   public TalonSRX rlRot = new TalonSRX(RobotMap.rlRot);
 
-  public TalonSRX rrDrive = new TalonSRX(RobotMap.rrDrv);
+  public TalonSRX rrDrv = new TalonSRX(RobotMap.rrDrv);
   public TalonSRX rrRot = new TalonSRX(RobotMap.rrRot);
 
-  public AnalogInput ha = new AnalogInput(3);
+  public SwerveModule frontleft = new SwerveModule(flDrv, flRot, 0);
+  public SwerveModule frontright = new SwerveModule(frDrv, frRot, 1);
+  public SwerveModule rearleft = new SwerveModule(rlDrv, rlRot, 2);
+  public SwerveModule rearright = new SwerveModule(rrDrv, rrRot, 3);
+
   public void JoystickControl(PS4Gamepad gp) {
     getJoystickValues(gp);
-    if(Math.abs(rotation) > .2) {
-      rotate();
+
+    if(Math.abs(rotation) > .15) {
+      frontleft.rotate(rotation);
+      frontright.rotate(rotation);
+      rearleft.rotate(rotation);
+      rearright.rotate(rotation);
     }
+
     else {
-      translateModule(flDrive, flRot, angle);
-      translateModule(frDrive, frRot, angle);
-      translateModule(rlDrive, rlRot, angle);
-      translateModule(rrDrive, rrRot, angle);
+      frontleft.set(throttle, angle);
+      frontright.set(throttle, angle);
+      rearleft.set(throttle, angle);
+      rearright.set(throttle, angle);
     }
   }
 
@@ -56,33 +62,11 @@ public class Drivetrain extends Subsystem {
     }
   } 
 
-  public void translateModule(TalonSRX drv, TalonSRX rot, double targetAngle) {
-    drv.set(ControlMode.PercentOutput, throttle);
-    rot.set(ControlMode.Position, targetAngle);
-    drv.setNeutralMode(NeutralMode.Brake);
-    rot.setNeutralMode(NeutralMode.Brake);
-
-  }
-
-  public void rotate() {
-    flRot.set(ControlMode.Position, -45);
-    flDrive.set(ControlMode.PercentOutput, rotation);
-
-    frRot.set(ControlMode.Position, 45);
-    frDrive.set(ControlMode.PercentOutput, -rotation);
-
-    rlRot.set(ControlMode.Position, 45);
-    rlDrive.set(ControlMode.PercentOutput, rotation);
-
-    rrRot.set(ControlMode.Position, -45);
-    rrDrive.set(ControlMode.PercentOutput, -rotation);
-  }
-
-  public void startup(TalonSRX talon) {
-    talon.configSelectedFeedbackCoefficient(.2174);
-    talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-    talon.setSelectedSensorPosition(0);
-    talon.config_kP(0, 15);
+  public void resetEncoders() {
+    flRot.setSelectedSensorPosition(0);
+    frRot.setSelectedSensorPosition(0);
+    rlRot.setSelectedSensorPosition(0);
+    rrRot.setSelectedSensorPosition(0);
   }
 
   @Override
