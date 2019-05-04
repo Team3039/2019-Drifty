@@ -3,10 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.controllers.PS4Controller;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.robot.commands.TeleOpDrive;
-import frc.util.PS4Gamepad;
 import frc.util.SwerveModule;
 
 public class Drivetrain extends Subsystem {
@@ -32,7 +32,7 @@ public class Drivetrain extends Subsystem {
   public SwerveModule rearleft = new SwerveModule(rlDrv, rlRot, 2);
   public SwerveModule rearright = new SwerveModule(rrDrv, rrRot, 3);
 
-  public void JoystickControl(PS4Gamepad gp) {
+  public void JoystickControl(PS4Controller gp) {
     getJoystickValues(gp);
 
     if(Math.abs(rotation) > .15) {
@@ -50,7 +50,7 @@ public class Drivetrain extends Subsystem {
     }
   }
 
-  public void getJoystickValues(PS4Gamepad gp) {
+  public void getJoystickValues(PS4Controller gp) {
     double x = gp.getLeftXAxis();
     double y = -gp.getLeftYAxis();
     rotation = -gp.getRightXAxis() * Constants.rot;
