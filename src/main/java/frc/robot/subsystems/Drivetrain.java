@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
@@ -27,6 +28,8 @@ public class Drivetrain extends Subsystem {
   public TalonSRX rrDrv = new TalonSRX(RobotMap.rrDrv);
   public TalonSRX rrRot = new TalonSRX(RobotMap.rrRot);
 
+  // public AHRS gyro = new AHRS(SerialPort.Port.kMXP);
+
   public SwerveModule frontleft = new SwerveModule(flDrv, flRot, 0);
   public SwerveModule frontright = new SwerveModule(frDrv, frRot, 1);
   public SwerveModule rearleft = new SwerveModule(rlDrv, rlRot, 2);
@@ -34,7 +37,9 @@ public class Drivetrain extends Subsystem {
 
   public void JoystickControl(PS4Gamepad gp) {
     getJoystickValues(gp);
+    double heading  = getAngle();
 
+    //TODO join rotational and translatonal movement to activate at the same time
     if(Math.abs(rotation) > .15) {
       frontleft.rotate(rotation);
       frontright.rotate(rotation);
@@ -43,10 +48,10 @@ public class Drivetrain extends Subsystem {
     }
 
     else {
-      frontleft.set(throttle, angle);
-      frontright.set(throttle, angle);
-      rearleft.set(throttle, angle);
-      rearright.set(throttle, angle);
+      frontleft.set(throttle, angle-heading);
+      frontright.set(throttle, angle-heading);
+      rearleft.set(throttle, angle-heading);
+      rearright.set(throttle, angle-heading);
     }
   }
 
@@ -62,11 +67,17 @@ public class Drivetrain extends Subsystem {
     }
   } 
 
-  public void resetEncoders() {
+  public void reset() {
     flRot.setSelectedSensorPosition(0);
     frRot.setSelectedSensorPosition(0);
     rlRot.setSelectedSensorPosition(0);
     rrRot.setSelectedSensorPosition(0);
+    // gyro.reset(); TODO add reset gyro method
+  }
+
+  public double getAngle() {
+    // return gyro.get(); TODO add get angle method 
+    return 0;
   }
 
   @Override

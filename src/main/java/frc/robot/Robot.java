@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     oi = new OI();
-    drivetrain.resetEncoders();
+    drivetrain.reset();
 
     System.out.println("Only True Led-Gends Will Know");
   }
@@ -27,7 +27,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     System.out.println(drivetrain.frRot.getSelectedSensorPosition());
-
   }
 
   @Override
@@ -36,7 +35,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    drivetrain.resetEncoders();
+    drivetrain.reset();
     Scheduler.getInstance().run();
   }
 
