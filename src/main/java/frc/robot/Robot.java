@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    System.out.println(drivetrain.frRot.getSelectedSensorPosition());
+    // System.out.println(drivetrain.frRot.getSelectedSensorPosition());
   }
 
   @Override
@@ -62,9 +62,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    System.out.println(drivetrain.gyroArray[0]);
     Scheduler.getInstance().run();
-
-
   }
 
   @Override

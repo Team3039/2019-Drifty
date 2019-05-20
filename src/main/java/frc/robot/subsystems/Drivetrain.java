@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU_Faults;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.controllers.PS4Controller;
 import frc.robot.Constants;
@@ -16,6 +18,7 @@ public class Drivetrain extends Subsystem {
   public static double throttle = 0;
   public static double rotation = 0;
 
+  public static double[] gyroArray = new double[3];
   public TalonSRX flDrv = new TalonSRX(RobotMap.flDrv);
   public TalonSRX flRot = new TalonSRX(RobotMap.flRot);
 
@@ -28,7 +31,7 @@ public class Drivetrain extends Subsystem {
   public TalonSRX rrDrv = new TalonSRX(RobotMap.rrDrv);
   public TalonSRX rrRot = new TalonSRX(RobotMap.rrRot);
 
-  // public AHRS gyro = new AHRS(SerialPort.Port.kMXP);
+  public PigeonIMU gyro = new PigeonIMU(frDrv);
 
   public SwerveModule frontleft = new SwerveModule(flDrv, flRot, 0);
   public SwerveModule frontright = new SwerveModule(frDrv, frRot, 1);
@@ -37,9 +40,10 @@ public class Drivetrain extends Subsystem {
 
   public void JoystickControl(PS4Controller gp) {
     getJoystickValues(gp);
-    double heading  = getAngle();
+    updateGyro();
+    double heading  = gyroArray[0];
 
-    //TODO join rotational and translatonal movement to activate at the same time
+    //TODO join rotational and translatonal movement to activate at the same time, add vectors
     if(Math.abs(rotation) > .15) {
       frontleft.rotate(rotation);
       frontright.rotate(rotation);
@@ -72,12 +76,11 @@ public class Drivetrain extends Subsystem {
     frRot.setSelectedSensorPosition(0);
     rlRot.setSelectedSensorPosition(0);
     rrRot.setSelectedSensorPosition(0);
-    // gyro.reset(); TODO add reset gyro method
+    gyro.setYaw(0);
   }
 
-  public double getAngle() {
-    // return gyro.get(); TODO add get angle method 
-    return 0;
+  public void updateGyro() {
+    gyro.getYawPitchRoll(gyroArray);
   }
 
   @Override
