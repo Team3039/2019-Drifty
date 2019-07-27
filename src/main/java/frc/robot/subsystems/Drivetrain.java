@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU_Faults;
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.controllers.PS4Controller;
@@ -43,7 +41,6 @@ public class Drivetrain extends Subsystem {
     updateGyro();
     double heading  = gyroArray[0];
 
-    //TODO join rotational and translatonal movement to activate at the same time, add vectors
     if(Math.abs(rotation) > .15) {
       frontleft.rotate(rotation);
       frontright.rotate(rotation);
@@ -83,6 +80,11 @@ public class Drivetrain extends Subsystem {
     gyro.getYawPitchRoll(gyroArray);
   }
 
+  public double getGyro() {
+    updateGyro();
+    return gyroArray[0];
+  }
+  
   @Override
   public void initDefaultCommand() {
     setDefaultCommand(new TeleOpDrive());

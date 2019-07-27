@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    System.out.println(drivetrain.gyroArray[0]);
+    System.out.println(drivetrain.getGyro());
     Scheduler.getInstance().run();
   }
 
