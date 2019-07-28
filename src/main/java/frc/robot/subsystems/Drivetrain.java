@@ -12,7 +12,7 @@ import frc.util.SwerveModule;
 
 public class Drivetrain extends Subsystem {
 
-  public static double angle = 0;
+  public static double targetAngle = 0;
   public static double throttle = 0;
   public static double rotation = 0;
 
@@ -39,7 +39,7 @@ public class Drivetrain extends Subsystem {
   public void JoystickControl(PS4Controller gp) {
     getJoystickValues(gp);
     updateGyro();
-    double heading  = gyroArray[0];
+    double currentHeading  = getGyro();
 
     if(Math.abs(rotation) > .15) {
       frontleft.rotate(rotation);
@@ -49,10 +49,10 @@ public class Drivetrain extends Subsystem {
     }
 
     else {
-      frontleft.set(throttle, angle-heading);
-      frontright.set(throttle, angle-heading);
-      rearleft.set(throttle, angle-heading);
-      rearright.set(throttle, angle-heading);
+      frontleft.set(throttle, targetAngle-currentHeading);
+      frontright.set(throttle, targetAngle-currentHeading);
+      rearleft.set(throttle, targetAngle-currentHeading);
+      rearright.set(throttle, targetAngle-currentHeading);
     }
   }
 
@@ -62,9 +62,9 @@ public class Drivetrain extends Subsystem {
     rotation = gp.getRightXAxis() * Constants.rot;
 
     throttle = (Math.abs(x) + Math.abs(y)) * Constants.throttle;
-    angle = Math.toDegrees(Math.atan2(y,x)) - 90;
-    if(angle < 0) {
-      angle+=360;
+    targetAngle = Math.toDegrees(Math.atan2(y,x)) - 90;
+    if(targetAngle < 0) {
+      targetAngle+=360;
     }
   } 
 
