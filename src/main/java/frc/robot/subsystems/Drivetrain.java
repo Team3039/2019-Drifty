@@ -59,7 +59,7 @@ public class Drivetrain extends Subsystem {
   public void getJoystickValues(PS4Controller gp) {
     double x = gp.getLeftXAxis();
     double y = -gp.getLeftYAxis();
-    rotation = -gp.getRightXAxis() * Constants.rot;
+    rotation = gp.getRightXAxis() * Constants.rot;
 
     throttle = (Math.abs(x) + Math.abs(y)) * Constants.throttle;
     angle = Math.toDegrees(Math.atan2(y,x)) - 90;
