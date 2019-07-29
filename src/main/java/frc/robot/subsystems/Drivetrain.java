@@ -41,19 +41,11 @@ public class Drivetrain extends Subsystem {
     updateGyro();
     double currentHeading  = getGyro();
 
-    if(Math.abs(rotation) > .15) {
-      frontleft.rotate(rotation);
-      frontright.rotate(rotation);
-      rearleft.rotate(rotation);
-      rearright.rotate(rotation);
-    }
+    frontleft.set(throttle, rotation, targetAngle - currentHeading);
+    frontright.set(throttle, rotation, targetAngle - currentHeading);
+    rearleft.set(throttle, rotation, targetAngle - currentHeading);
+    rearright.set(throttle, rotation, targetAngle - currentHeading);
 
-    else {
-      frontleft.set(throttle, targetAngle-currentHeading);
-      frontright.set(throttle, targetAngle-currentHeading);
-      rearleft.set(throttle, targetAngle-currentHeading);
-      rearright.set(throttle, targetAngle-currentHeading);
-    }
   }
 
   public void getJoystickValues(PS4Controller gp) {

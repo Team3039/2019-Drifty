@@ -29,41 +29,47 @@ public class SwerveModule {
     }
 
     /**
-     * @param throttle
-     *  Movement Speed (-1 to 1)
+     * @param translationalThrottle
+     *  Translational Speed (-1 to 1) - Combined Joystick Input
+     * @param rotationalThrottle
+     *  Rotational Speed (-1 to 1) - Single Joystick Input
      * @param targetAngle
-     *  Desired drving direction
+     *  Direction of Travel (0 to 360) - For Field-Orientated Control take this number and subtract your current angle
      **/
-    public void set(double throttle, double targetAngle) {
-        drive.set(ControlMode.PercentOutput, throttle);
-        rotation.set(ControlMode.Position, targetAngle);
-    }
+    public void set(double translationalThrottle, double rotationalThrottle, double targetAngle) {
+        double combinedThrottle = 0;
+        double combinedHeading = 0;
+        double rotationalDegree = rotationalThrottle * 45; //Might not work FYI
 
-    /**
-     * @param throttle
-     *  Rotational Speed (-1 to 1) 
-     */
-    public void rotate(double throttle) {
-        if(place == 0) {
-            set(throttle, -45);
+        switch(place) {
+            case 0: // set(throttle, -45);
+            combinedHeading = (targetAngle -rotationalDegree)/2;
+            combinedThrottle = (translationalThrottle + rotationalThrottle)/2;
+            break;
+
+            case 1: //set(-throttle, 45);
+            combinedHeading = (targetAngle +rotationalDegree)/2; 
+            combinedThrottle = (translationalThrottle - rotationalThrottle)/2;
+            break;
+
+            case 2: //set(throttle, 45);
+            combinedHeading = (targetAngle +rotationalDegree)/2; 
+            combinedThrottle = (translationalThrottle + rotationalThrottle)/2;
+            break;
+
+            case 3: //set(-throttle, -45);
+            combinedHeading = (targetAngle -rotationalDegree)/2; 
+            combinedThrottle = (translationalThrottle - rotationalThrottle)/2;
+            break;
         }
-        else if(place == 1) {
-            set(-throttle, 45);
-        }
-        else if(place == 2) {
-            set(throttle, 45);
-        }
-        else if(place == 3) {
-            set(-throttle, -45);
-        }
-        else {
-            set(0, 0);
-        }
+
+        rotation.set(ControlMode.Position, combinedHeading);
+        drive.set(ControlMode.PercentOutput, combinedThrottle);
     }
 
     public void rotationSetup(TalonSRX talon) {
         talon.configSelectedFeedbackCoefficient(.2174);
-        talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder); 
         talon.setSelectedSensorPosition(0);
         talon.config_kP(0, 15);
     }
