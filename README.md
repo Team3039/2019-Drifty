@@ -2,5 +2,6 @@
 Contributors tefloyd1215@gmail.com
 
 TODO
--Use Ether Swerve Calculations
+-Test Ether Swerve Calculations
+-Eventally Move all Swere Calculations to frc.util.SwerveModule.java
 -Fix "Gap" between 0 and 360 degrees

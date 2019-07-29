@@ -30,18 +30,33 @@ public class SwerveModule {
 
     /**
      * @param translationalThrottle
-     *  Translational Speed (-1 to 1) - Combined Joystick Input
-     * @param rotationalThrottle
-     *  Rotational Speed (-1 to 1) - Single Joystick Input
+     *  Translational Speed (-1 to 1)
      * @param targetAngle
-     *  Direction of Travel (0 to 360) - For Field-Orientated Control take this number and subtract your current angle
+     *  Direction of Travel (0 to 360)
      **/
-    public void set(double translationalThrottle, double rotationalThrottle, double targetAngle) {
-    // TODO: Add Ether Swerve Math    
+    public void set(double translationalThrottle, double targetAngle) {
+        drive.set(ControlMode.PercentOutput, translationalThrottle);
+        rotation.set(ControlMode.Position, targetAngle);
+    }   
+
+    /**
+     * @param targetAngle
+     *  Angle for the Module to Rotate to (0 to 360)
+     **/
+    public void setModuleAngle(double targetAngle) {
+        rotation.set(ControlMode.Position, targetAngle);
+    }
+
+    /**
+     * @param percentOutput
+     *  Set the drive output (-1 to 1) for the Module
+     */
+    public void setModuleThrottle(double percentOutput) {
+        drive.set(ControlMode.PercentOutput, percentOutput);
     }
 
     public void rotationSetup(TalonSRX talon) {
-        talon.configSelectedFeedbackCoefficient(.2174);
+        talon.configSelectedFeedbackCoefficient(.2174); //Allows User to pass only an angle to the Rotation Motor
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder); 
         talon.setSelectedSensorPosition(0);
         talon.config_kP(0, 15);

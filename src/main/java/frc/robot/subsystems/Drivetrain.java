@@ -16,6 +16,9 @@ public class Drivetrain extends Subsystem {
   public static double throttle = 0;
   public static double rotation = 0;
 
+  public static double x = 0;
+  public static double y = 0;
+
   public static double[] gyroArray = new double[3];
   public TalonSRX flDrv = new TalonSRX(RobotMap.flDrv);
   public TalonSRX flRot = new TalonSRX(RobotMap.flRot);
@@ -41,16 +44,60 @@ public class Drivetrain extends Subsystem {
     updateGyro();
     double currentHeading  = getGyro();
 
-    frontleft.set(throttle, rotation, targetAngle - currentHeading);
-    frontright.set(throttle, rotation, targetAngle - currentHeading);
-    rearleft.set(throttle, rotation, targetAngle - currentHeading);
-    rearright.set(throttle, rotation, targetAngle - currentHeading);
+    //Ether Swerve Calculations
+    double Fwd = y*Math.cos(currentHeading) + x*Math.sin(currentHeading);
+    double Str = -y*Math.sin(currentHeading) + x*Math.cos(currentHeading);
 
+    double a = Str - rotation*(Constants.Legnth/Constants.R);
+    double b = Str + rotation*(Constants.Legnth/Constants.R);
+    double c = Fwd - rotation*(Constants.Width/Constants.R);
+    double d = Fwd + rotation*(Constants.Width/Constants.R);
+
+    //wsX = Wheel Speed
+    //waX = Wheel Angle 
+    double ws0 = Math.sqrt(Math.pow(b,2)+Math.pow(d,2));          
+    double wa0 = Math.atan2(b,d)*180/Math.PI; 
+
+    double ws1 = Math.sqrt(Math.pow(b,2)+Math.pow(c,2));           
+    double wa1 = Math.atan2(b,c)*180/Math.PI;
+
+    double ws2 = Math.sqrt(Math.pow(a,2)+Math.pow(d,2));          
+    double wa2 = Math.atan2(a,d)*180/Math.PI;
+ 
+    double ws3 = Math.sqrt(Math.pow(a,2)+Math.pow(c,2));          
+    double wa3 = Math.atan2(a,c)*180/Math.PI;
+
+    //Normalize Speeds
+    double max = ws0; 
+    if(ws1>max) {
+      max=ws1;
+    } 
+
+    if(ws2>max) {
+    max=ws2;
+    } 
+
+    if(ws3>max) {
+    max=ws3;
+    } 
+
+    if(max>1){
+      ws0/=max; 
+      ws1/=max; 
+      ws2/=max; 
+      ws3/=max;
+    } 
+
+    //Module Control
+    frontleft.set(ws0, wa0);
+    frontright.set(ws1, wa1);
+    rearleft.set(ws2, wa2);
+    rearright.set(ws3, wa3);
   }
 
   public void getJoystickValues(PS4Controller gp) {
-    double x = gp.getLeftXAxis();
-    double y = -gp.getLeftYAxis();
+    x = gp.getLeftXAxis();
+    y = -gp.getLeftYAxis();
     rotation = gp.getRightXAxis() * Constants.rot;
 
     throttle = (Math.abs(x) + Math.abs(y)) * Constants.throttle;
