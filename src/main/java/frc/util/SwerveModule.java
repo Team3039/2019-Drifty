@@ -37,34 +37,7 @@ public class SwerveModule {
      *  Direction of Travel (0 to 360) - For Field-Orientated Control take this number and subtract your current angle
      **/
     public void set(double translationalThrottle, double rotationalThrottle, double targetAngle) {
-        double combinedThrottle = 0;
-        double combinedHeading = 0;
-        double rotationalDegree = rotationalThrottle * 45; //Might not work FYI
-
-        switch(place) {
-            case 0: // set(throttle, -45);
-            combinedHeading = (targetAngle -rotationalDegree)/2;
-            combinedThrottle = (translationalThrottle + rotationalThrottle)/2;
-            break;
-
-            case 1: //set(-throttle, 45);
-            combinedHeading = (targetAngle +rotationalDegree)/2; 
-            combinedThrottle = (translationalThrottle - rotationalThrottle)/2;
-            break;
-
-            case 2: //set(throttle, 45);
-            combinedHeading = (targetAngle +rotationalDegree)/2; 
-            combinedThrottle = (translationalThrottle + rotationalThrottle)/2;
-            break;
-
-            case 3: //set(-throttle, -45);
-            combinedHeading = (targetAngle -rotationalDegree)/2; 
-            combinedThrottle = (translationalThrottle - rotationalThrottle)/2;
-            break;
-        }
-
-        rotation.set(ControlMode.Position, combinedHeading);
-        drive.set(ControlMode.PercentOutput, combinedThrottle);
+    // TODO: Add Ether Swerve Math    
     }
 
     public void rotationSetup(TalonSRX talon) {
