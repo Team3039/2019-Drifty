@@ -42,11 +42,13 @@ public class Drivetrain extends Subsystem {
   public void JoystickControl(PS4Controller gp) {
     getJoystickValues(gp);
     updateGyro();
-    double currentHeading  = getGyro();
+    double currentHeading = getGyro();
 
     //Ether Swerve Calculations
-    double Fwd = y*Math.cos(currentHeading) + x*Math.sin(currentHeading);
-    double Str = -y*Math.sin(currentHeading) + x*Math.cos(currentHeading);
+    // double Fwd = y*Math.cos(currentHeading) + x*Math.sin(currentHeading);
+    // double Str = -y*Math.sin(currentHeading) + x*Math.cos(currentHeading);
+    double Fwd = y;
+    double Str = x;
 
     double a = Str - rotation*(Constants.Legnth/Constants.R);
     double b = Str + rotation*(Constants.Legnth/Constants.R);
@@ -100,11 +102,11 @@ public class Drivetrain extends Subsystem {
     y = -gp.getLeftYAxis();
     rotation = gp.getRightXAxis() * Constants.rot;
 
-    throttle = (Math.abs(x) + Math.abs(y)) * Constants.throttle;
-    targetAngle = Math.toDegrees(Math.atan2(y,x)) - 90;
-    if(targetAngle < 0) {
-      targetAngle+=360;
-    }
+    // throttle = (Math.abs(x) + Math.abs(y)) * Constants.throttle;
+    // targetAngle = Math.toDegrees(Math.atan2(y,x)) - 90;
+    // if(targetAngle < 0) {
+    //   targetAngle+=360;
+    // }
   } 
 
   public void reset() {
@@ -121,7 +123,7 @@ public class Drivetrain extends Subsystem {
 
   public double getGyro() {
     updateGyro();
-    return gyroArray[0];
+    return -gyroArray[0];
   }
   
   @Override

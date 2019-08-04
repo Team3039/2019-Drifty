@@ -26,15 +26,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    System.out.println(drivetrain.getGyro());
   }
 
   @Override
   public void disabledInit() {
+    drivetrain.reset();
   }
 
   @Override
   public void disabledPeriodic() {
-    drivetrain.reset();
     Scheduler.getInstance().run();
   }
 
@@ -61,7 +62,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    System.out.println(drivetrain.getGyro());
     Scheduler.getInstance().run();
   }
 
