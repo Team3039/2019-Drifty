@@ -47,7 +47,7 @@ public class Drivetrain extends Subsystem {
     //Ether Swerve Calculations
     // double Fwd = y*Math.cos(currentHeading) + x*Math.sin(currentHeading);
     // double Str = -y*Math.sin(currentHeading) + x*Math.cos(currentHeading);
-    double Fwd = y;
+    double Fwd = -y;
     double Str = x;
 
     double a = Str - rotation*(Constants.Legnth/Constants.R);
@@ -99,7 +99,7 @@ public class Drivetrain extends Subsystem {
 
   public void getJoystickValues(PS4Controller gp) {
     x = gp.getLeftXAxis();
-    y = -gp.getLeftYAxis();
+    y = gp.getLeftYAxis();
     rotation = gp.getRightXAxis() * Constants.rot;
 
     // throttle = (Math.abs(x) + Math.abs(y)) * Constants.throttle;
@@ -109,12 +109,15 @@ public class Drivetrain extends Subsystem {
     // }
   } 
 
-  public void reset() {
+  public void resetGyro() {
+    gyro.setYaw(0);
+  }
+
+  public void resetRotationEnc() {
     flRot.setSelectedSensorPosition(0);
     frRot.setSelectedSensorPosition(0);
     rlRot.setSelectedSensorPosition(0);
     rrRot.setSelectedSensorPosition(0);
-    gyro.setYaw(0);
   }
 
   public void updateGyro() {
