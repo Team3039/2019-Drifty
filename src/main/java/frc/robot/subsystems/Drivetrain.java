@@ -101,10 +101,10 @@ public class Drivetrain extends Subsystem {
     } 
 
     //Module Control
-    frontleft.set(ws0, wa0+=currentHeading);
-    frontright.set(ws1, wa1+=currentHeading);
-    rearleft.set(ws2, wa2+=currentHeading);
-    rearright.set(ws3, wa3+=currentHeading);
+    frontleft.set(ws0, wa0);
+    frontright.set(ws1, wa1);
+    rearleft.set(ws2, wa2);
+    rearright.set(ws3, wa3);
   }
 
   public void getJoystickValues(PS4Controller gp) {
