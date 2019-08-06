@@ -47,27 +47,37 @@ public class Drivetrain extends Subsystem {
     //Ether Swerve Calculations
     // double Fwd = y*Math.cos(currentHeading) + x*Math.sin(currentHeading);
     // double Str = -y*Math.sin(currentHeading) + x*Math.cos(currentHeading);
-    double Fwd = -y;
+    double Fwd = y;
     double Str = x;
 
-    double a = Str - rotation*(Constants.Legnth/Constants.R);
-    double b = Str + rotation*(Constants.Legnth/Constants.R);
-    double c = Fwd - rotation*(Constants.Width/Constants.R);
-    double d = Fwd + rotation*(Constants.Width/Constants.R);
+    double a = Str - rotation*(Constants.Legnth/Constants.Diameter);
+    double b = Str + rotation*(Constants.Legnth/Constants.Diameter);
+    double c = Fwd - rotation*(Constants.Width/Constants.Diameter);
+    double d = Fwd + rotation*(Constants.Width/Constants.Diameter);
 
     //wsX = Wheel Speed
     //waX = Wheel Angle 
-    double ws0 = Math.sqrt(Math.pow(b,2)+Math.pow(d,2));          
-    double wa0 = Math.atan2(b,d)*180/Math.PI; 
 
-    double ws1 = Math.sqrt(Math.pow(b,2)+Math.pow(c,2));           
-    double wa1 = Math.atan2(b,c)*180/Math.PI;
+    /*    c     d
+    *   b-|-----|-b
+    *     |     |
+    *     |     |         ^Forward
+    *     |     |
+    *   a-|-----|-a
+    *     c     d
+    */
+    
+    double ws0 = Math.sqrt((b*b)+(c*c));           
+    double wa0 = Math.atan2(b,c)*180/Math.PI;
 
-    double ws2 = Math.sqrt(Math.pow(a,2)+Math.pow(d,2));          
-    double wa2 = Math.atan2(a,d)*180/Math.PI;
+    double ws1 = Math.sqrt((b*b)+(d*d));          
+    double wa1 = Math.atan2(b,d)*180/Math.PI; 
  
-    double ws3 = Math.sqrt(Math.pow(a,2)+Math.pow(c,2));          
-    double wa3 = Math.atan2(a,c)*180/Math.PI;
+    double ws2 = Math.sqrt((a*a)+(c*c));          
+    double wa2 = Math.atan2(a,c)*180/Math.PI;
+
+    double ws3 = Math.sqrt((a*a)+(d*d));          
+    double wa3 = Math.atan2(a,d)*180/Math.PI;
 
     //Normalize Speeds
     double max = ws0; 
@@ -91,10 +101,10 @@ public class Drivetrain extends Subsystem {
     } 
 
     //Module Control
-    frontleft.set(ws0, wa0);
-    frontright.set(ws1, wa1);
-    rearleft.set(ws2, wa2);
-    rearright.set(ws3, wa3);
+    frontleft.set(ws0, wa0+=currentHeading);
+    frontright.set(ws1, wa1+=currentHeading);
+    rearleft.set(ws2, wa2+=currentHeading);
+    rearright.set(ws3, wa3+=currentHeading);
   }
 
   public void getJoystickValues(PS4Controller gp) {

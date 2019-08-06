@@ -12,6 +12,6 @@ public class Constants {
     //Dimensions
     public static final double Legnth = 22;
     public static final double Width = 18;
-    public static final double R = Math.sqrt(Math.pow(Legnth, 2) + Math.pow(Width, 2));
+    public static final double Diameter = Math.sqrt((Legnth * Legnth) + (Width * Width));
 
 }

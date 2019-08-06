@@ -31,10 +31,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    drivetrain.frontleft.set(0, 0);
-    drivetrain.frontright.set(0, 0);
-    drivetrain.rearleft.set(0, 0);
-    drivetrain.rearright.set(0, 0);
   }
 
   @Override
