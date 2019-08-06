@@ -19,13 +19,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     oi = new OI();
-    drivetrain.reset();
-
+    drivetrain.resetGyro();
+    drivetrain.resetRotationEnc();
     System.out.println("Only True Led-Gends Will Know");
   }
 
   @Override
   public void robotPeriodic() {
+    System.out.println(drivetrain.getGyro());
   }
 
   @Override
@@ -34,7 +35,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    drivetrain.reset();
     Scheduler.getInstance().run();
   }
 
@@ -61,7 +61,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    System.out.println(drivetrain.getGyro());
     Scheduler.getInstance().run();
   }
 

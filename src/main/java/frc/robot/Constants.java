@@ -9,7 +9,9 @@ public class Constants {
     public static final double throttle = .5;
     public static final double rot = .7;
 
-    public static final double L = 22;
-    public static final double W = 18;
+    //Dimensions
+    public static final double Legnth = 22;
+    public static final double Width = 18;
+    public static final double Diameter = Math.sqrt((Legnth * Legnth) + (Width * Width));
 
 }

@@ -29,41 +29,35 @@ public class SwerveModule {
     }
 
     /**
-     * @param throttle
-     *  Movement Speed (-1 to 1)
+     * @param translationalThrottle
+     *  Translational Speed (-1 to 1)
      * @param targetAngle
-     *  Desired drving direction
+     *  Direction of Travel (0 to 360)
      **/
-    public void set(double throttle, double targetAngle) {
-        drive.set(ControlMode.PercentOutput, throttle);
+    public void set(double translationalThrottle, double targetAngle) {
+        drive.set(ControlMode.PercentOutput, translationalThrottle);
+        rotation.set(ControlMode.Position, targetAngle);
+    }   
+
+    /**
+     * @param targetAngle
+     *  Angle for the Module to Rotate to (0 to 360)
+     **/
+    public void setModuleAngle(double targetAngle) {
         rotation.set(ControlMode.Position, targetAngle);
     }
 
     /**
-     * @param throttle
-     *  Rotational Speed (-1 to 1) 
+     * @param percentOutput
+     *  Set the drive output (-1 to 1) for the Module
      */
-    public void rotate(double throttle) {
-        if(place == 0) {
-            set(throttle, -45);
-        }
-        else if(place == 1) {
-            set(-throttle, 45);
-        }
-        else if(place == 2) {
-            set(throttle, 45);
-        }
-        else if(place == 3) {
-            set(-throttle, -45);
-        }
-        else {
-            set(0, 0);
-        }
+    public void setModuleThrottle(double percentOutput) {
+        drive.set(ControlMode.PercentOutput, percentOutput);
     }
 
     public void rotationSetup(TalonSRX talon) {
-        talon.configSelectedFeedbackCoefficient(.2174);
-        talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        talon.configSelectedFeedbackCoefficient(.2174); //Allows User to pass only an angle to the Rotation Motor
+        talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder); 
         talon.setSelectedSensorPosition(0);
         talon.config_kP(0, 15);
     }

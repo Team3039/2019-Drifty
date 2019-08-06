@@ -2,5 +2,5 @@
 Contributors tefloyd1215@gmail.com
 
 TODO
--Combine Translation and Rotation
+-Eventally Move all Swere Calculations to frc.util.SwerveModule.java
 -Fix "Gap" between 0 and 360 degrees
