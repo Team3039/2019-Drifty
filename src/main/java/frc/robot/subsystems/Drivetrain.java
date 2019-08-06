@@ -45,8 +45,6 @@ public class Drivetrain extends Subsystem {
     double currentHeading = getGyro();
 
     //Ether Swerve Calculations
-    // double Fwd = y*Math.cos(currentHeading) + x*Math.sin(currentHeading);
-    // double Str = -y*Math.sin(currentHeading) + x*Math.cos(currentHeading);
     double Fwd = y;
     double Str = x;
 
@@ -111,12 +109,6 @@ public class Drivetrain extends Subsystem {
     x = gp.getLeftXAxis();
     y = gp.getLeftYAxis();
     rotation = gp.getRightXAxis() * Constants.rot;
-
-    // throttle = (Math.abs(x) + Math.abs(y)) * Constants.throttle;
-    // targetAngle = Math.toDegrees(Math.atan2(y,x)) - 90;
-    // if(targetAngle < 0) {
-    //   targetAngle+=360;
-    // }
   } 
 
   public void resetGyro() {
