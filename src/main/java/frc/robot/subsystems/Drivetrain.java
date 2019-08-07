@@ -45,8 +45,9 @@ public class Drivetrain extends Subsystem {
     double currentHeading = getGyro();
 
     //Ether Swerve Calculations
-    double Fwd = y;
-    double Str = x;
+    double temp = y * Math.cos(Math.toRadians(currentHeading)) + x * Math.sin(Math.toRadians(currentHeading));
+    double Str  = -y * Math.sin(Math.toRadians(currentHeading)) + x * Math.cos(Math.toRadians(currentHeading));
+    double Fwd = temp;
 
     double a = Str - rotation*(Constants.Legnth/Constants.Diameter);
     double b = Str + rotation*(Constants.Legnth/Constants.Diameter);
@@ -56,26 +57,25 @@ public class Drivetrain extends Subsystem {
     //wsX = Wheel Speed
     //waX = Wheel Angle 
 
-    /*    c     d
+    /*    d     c
     *   b-|-----|-b
-    *     |     |
     *     |     |         ^Forward
     *     |     |
     *   a-|-----|-a
-    *     c     d
+    *     d     c
     */
     
-    double ws0 = Math.sqrt((b*b)+(c*c));           
-    double wa0 = Math.atan2(b,c)*180/Math.PI;
+    double ws1 = Math.sqrt((b*b)+(c*c));           
+    double wa1 = Math.atan2(b,c)*180/Math.PI;
 
-    double ws1 = Math.sqrt((b*b)+(d*d));          
-    double wa1 = Math.atan2(b,d)*180/Math.PI; 
+    double ws0 = Math.sqrt((b*b)+(d*d));          
+    double wa0 = Math.atan2(b,d)*180/Math.PI; 
  
-    double ws2 = Math.sqrt((a*a)+(c*c));          
-    double wa2 = Math.atan2(a,c)*180/Math.PI;
+    double ws3 = Math.sqrt((a*a)+(c*c));          
+    double wa3 = Math.atan2(a,c)*180/Math.PI;
 
-    double ws3 = Math.sqrt((a*a)+(d*d));          
-    double wa3 = Math.atan2(a,d)*180/Math.PI;
+    double ws2 = Math.sqrt((a*a)+(d*d));          
+    double wa2 = Math.atan2(a,d)*180/Math.PI;
 
     //Normalize Speeds
     double max = ws0; 
@@ -99,10 +99,10 @@ public class Drivetrain extends Subsystem {
     } 
 
     //Module Control
-    frontleft.set(ws0, wa0+=currentHeading);
-    frontright.set(ws1, wa1+=currentHeading);
-    rearleft.set(ws2, wa2+=currentHeading);
-    rearright.set(ws3, wa3+=currentHeading);
+    frontleft.set(ws0, wa0);
+    frontright.set(ws1, wa1);
+    rearleft.set(ws2, wa2);
+    rearright.set(ws3, wa3);
   }
 
   public void getJoystickValues(PS4Controller gp) {
@@ -112,7 +112,7 @@ public class Drivetrain extends Subsystem {
   } 
 
   public void resetGyro() {
-    gyro.setYaw(0);
+    gyro.setFusedHeading(0);
   }
 
   public void resetRotationEnc() {
@@ -127,8 +127,10 @@ public class Drivetrain extends Subsystem {
   }
 
   public double getGyro() {
-    updateGyro();
-    return -gyroArray[0];
+    double angle = gyro.getFusedHeading();
+    angle %= 360;
+    if (angle < 0) angle += 360;
+    return 360 - angle;
   }
   
   @Override
