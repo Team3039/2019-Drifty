@@ -12,8 +12,7 @@ import frc.util.SwerveModule;
 
 public class Drivetrain extends Subsystem {
 
-  public static double targetAngle = 0;
-  public static double throttle = 0;
+
   public static double rotation = 0;
 
   public static double x = 0;
@@ -42,17 +41,17 @@ public class Drivetrain extends Subsystem {
   public void JoystickControl(PS4Controller gp) {
     getJoystickValues(gp);
     updateGyro();
-    double currentHeading = getGyro();
 
     //Ether Swerve Calculations
-    double temp = y * Math.cos(Math.toRadians(currentHeading)) + x * Math.sin(Math.toRadians(currentHeading));
-    double Str  = -y * Math.sin(Math.toRadians(currentHeading)) + x * Math.cos(Math.toRadians(currentHeading));
+    double angleRadians = Math.toRadians(getGyro());
+    double temp = y * Math.cos(Math.toRadians(angleRadians)) + x * Math.sin(Math.toRadians(angleRadians));
+    double Str  = -y * Math.sin(Math.toRadians(angleRadians)) + x * Math.cos(Math.toRadians(angleRadians));
     double Fwd = temp;
 
-    double a = Str - rotation*(Constants.Legnth/Constants.Diameter);
-    double b = Str + rotation*(Constants.Legnth/Constants.Diameter);
-    double c = Fwd - rotation*(Constants.Width/Constants.Diameter);
-    double d = Fwd + rotation*(Constants.Width/Constants.Diameter);
+    double a = Str - rotation*(Constants.Legnth/Constants.Width);
+    double b = Str + rotation*(Constants.Legnth/Constants.Width);
+    double c = Fwd + rotation*(Constants.Width/Constants.Legnth);
+    double d = Fwd - rotation*(Constants.Width/Constants.Legnth);
 
     //wsX = Wheel Speed
     //waX = Wheel Angle 
@@ -106,13 +105,13 @@ public class Drivetrain extends Subsystem {
   }
 
   public void getJoystickValues(PS4Controller gp) {
-    x = gp.getLeftXAxis();
-    y = gp.getLeftYAxis();
-    rotation = gp.getRightXAxis() * Constants.rot;
+    x = -gp.getLeftXAxis();
+    y = -gp.getLeftYAxis();
+    rotation = -gp.getRightXAxis() * Constants.rot;
   } 
 
   public void resetGyro() {
-    gyro.setFusedHeading(0);
+    gyro.setYaw(0);
   }
 
   public void resetRotationEnc() {
@@ -127,11 +126,12 @@ public class Drivetrain extends Subsystem {
   }
 
   public double getGyro() {
-    double angle = gyro.getFusedHeading();
+    updateGyro();
+    double angle = -gyroArray[0];
     angle %= 360;
-    if (angle < 0) angle += 360;
-    return 360 - angle;
+    return angle;
   }
+
   
   @Override
   public void initDefaultCommand() {

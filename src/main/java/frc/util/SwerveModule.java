@@ -35,8 +35,8 @@ public class SwerveModule {
      *  Direction of Travel (0 to 360)
      **/
     public void set(double translationalThrottle, double targetAngle) {
-        drive.set(ControlMode.PercentOutput, translationalThrottle);
-        rotation.set(ControlMode.Position, targetAngle);
+        setModuleThrottle(translationalThrottle);
+        setModuleAngle(targetAngle);
     }   
 
     /**
