@@ -10,15 +10,7 @@ import frc.robot.RobotMap;
 import frc.robot.commands.TeleOpDrive;
 import frc.util.SwerveModule;
 
-public class Drivetrain extends Subsystem {
-
-
-  public static double rotation = 0;
-
-  public static double x = 0;
-  public static double y = 0;
-
-  public static double[] gyroArray = new double[3];
+public class Drivetrain extends Subsystem {  
   public TalonSRX flDrv = new TalonSRX(RobotMap.flDrv);
   public TalonSRX flRot = new TalonSRX(RobotMap.flRot);
 
@@ -33,105 +25,118 @@ public class Drivetrain extends Subsystem {
 
   public PigeonIMU gyro = new PigeonIMU(frDrv);
 
-  public SwerveModule frontleft = new SwerveModule(flDrv, flRot, 0);
-  public SwerveModule frontright = new SwerveModule(frDrv, frRot, 1);
-  public SwerveModule rearleft = new SwerveModule(rlDrv, rlRot, 2);
-  public SwerveModule rearright = new SwerveModule(rrDrv, rrRot, 3);
+  public SwerveModule frontLeft = new SwerveModule(flDrv, flRot);
+  public SwerveModule frontRight = new SwerveModule(frDrv, frRot);
+  public SwerveModule rearLeft = new SwerveModule(rlDrv, rlRot);
+  public SwerveModule rearRight = new SwerveModule(rrDrv, rrRot);
+
+  public SwerveModule[] drivetrain = {frontRight, frontLeft, rearLeft, rearRight};
+
+  public double[] wheelSpeeds = new double[4];
+  public double[] wheelAngles = new double[4];
 
   public void JoystickControl(PS4Controller gp) {
-    getJoystickValues(gp);
-    updateGyro();
+    //Do the Math, Save the World!
+    swerveCalculations(getFwd(gp), getStr(gp), getRot(gp));
+
+    //Sets Calculated Speeds and Angles for each Module in Series
+    for(int i = 0; i<4; i++) {
+      drivetrain[i].set(wheelSpeeds[i], wheelAngles[i]);
+    }
+  }
+
+  public void swerveCalculations(double joystickFwd, double joystickStr, double joystickRot) {
+
+    /*  
+    *   1 d     c 0
+    *   b-|-----|-b
+    *     |  ^  | 
+    *     |  |  |
+    *   a-|-----|-a
+    *   2 d     c 3
+    */
 
     //Ether Swerve Calculations
     double angleRadians = Math.toRadians(getGyro());
-    double temp = y * Math.cos(Math.toRadians(angleRadians)) + x * Math.sin(Math.toRadians(angleRadians));
-    double Str  = -y * Math.sin(Math.toRadians(angleRadians)) + x * Math.cos(Math.toRadians(angleRadians));
+    double temp = joystickFwd * Math.cos(angleRadians) + joystickStr * Math.sin(angleRadians);
+    double Str  = -joystickFwd * Math.sin(angleRadians) + joystickStr * Math.cos(angleRadians);
     double Fwd = temp;
 
-    double a = Str - rotation*(Constants.Legnth/Constants.Width);
-    double b = Str + rotation*(Constants.Legnth/Constants.Width);
-    double c = Fwd + rotation*(Constants.Width/Constants.Legnth);
-    double d = Fwd - rotation*(Constants.Width/Constants.Legnth);
+    double a = Str - joystickRot*(Constants.Legnth/Constants.Diameter);
+    double b = Str + joystickRot*(Constants.Legnth/Constants.Diameter);
+    double c = Fwd - joystickRot*(Constants.Width/Constants.Diameter);
+    double d = Fwd + joystickRot*(Constants.Width/Constants.Diameter); 
 
-    //wsX = Wheel Speed
-    //waX = Wheel Angle 
+    wheelSpeeds[0] = Math.sqrt((b*b)+(c*c));           
+    wheelAngles[0] = Math.atan2(b,c)*180/Math.PI;
 
-    /*    d     c
-    *   b-|-----|-b
-    *     |     |         ^Forward
-    *     |     |
-    *   a-|-----|-a
-    *     d     c
-    */
-    
-    double ws1 = Math.sqrt((b*b)+(c*c));           
-    double wa1 = Math.atan2(b,c)*180/Math.PI;
-
-    double ws0 = Math.sqrt((b*b)+(d*d));          
-    double wa0 = Math.atan2(b,d)*180/Math.PI; 
+    wheelSpeeds[1] = Math.sqrt((b*b)+(d*d));          
+    wheelAngles[1] = Math.atan2(b,d)*180/Math.PI; 
  
-    double ws3 = Math.sqrt((a*a)+(c*c));          
-    double wa3 = Math.atan2(a,c)*180/Math.PI;
+    wheelSpeeds[2] = Math.sqrt((a*a)+(d*d));          
+    wheelAngles[2] = Math.atan2(a,d)*180/Math.PI;
 
-    double ws2 = Math.sqrt((a*a)+(d*d));          
-    double wa2 = Math.atan2(a,d)*180/Math.PI;
+    wheelSpeeds[3] = Math.sqrt((a*a)+(c*c));          
+    wheelAngles[3] = Math.atan2(a,c)*180/Math.PI;
+  }
 
-    //Normalize Speeds
-    double max = ws0; 
-    if(ws1>max) {
-      max=ws1;
-    } 
+  //Set Each Module to their Original Position
+  public void resetPose() {
+    for(int i = 0; i < 4; i++) {
+      drivetrain[i].set(0, 0);
+    }
+  }
 
-    if(ws2>max) {
-    max=ws2;
-    } 
+  //Zero the Sensors on each Module
+  public void zeroSensors() {
+    for(int i = 0; i < 4; i++) {
+      drivetrain[i].zeroSensors();
+    }
+  }
 
-    if(ws3>max) {
-    max=ws3;
-    } 
+  //Set Gyro to 0
+  public void resetGyro() {
+    gyro.setFusedHeading(0);
+  }
+
+  //Return Gyro Output [0-360)
+  public double getGyro() {
+    double angle = gyro.getFusedHeading();
+    angle %= 360;
+    if (angle < 0) {
+      angle += 360;
+    }
+    return 360 - angle;
+  }
+
+  public void normalizeSpeeds() {
+    double max = wheelSpeeds[0]; 
+   
+    for(int i = 0; i < 4; i++) {
+      if(wheelSpeeds[i] > max) {
+        max = wheelSpeeds[i];
+      }
+    }
 
     if(max>1){
-      ws0/=max; 
-      ws1/=max; 
-      ws2/=max; 
-      ws3/=max;
+      for(int i = 0; i < 4; i++) {
+        wheelSpeeds[i] /= max;
+      }
     } 
 
-    //Module Control
-    frontleft.set(ws0, wa0);
-    frontright.set(ws1, wa1);
-    rearleft.set(ws2, wa2);
-    rearright.set(ws3, wa3);
   }
-
-  public void getJoystickValues(PS4Controller gp) {
-    x = -gp.getLeftXAxis();
-    y = -gp.getLeftYAxis();
-    rotation = -gp.getRightXAxis() * Constants.rot;
+  
+  public double getFwd(PS4Controller gp) {
+    return gp.getLeftYAxis();
   } 
 
-  public void resetGyro() {
-    gyro.setYaw(0);
-  }
+  public double getStr(PS4Controller gp) {
+    return gp.getLeftXAxis();
+  } 
 
-  public void resetRotationEnc() {
-    flRot.setSelectedSensorPosition(0);
-    frRot.setSelectedSensorPosition(0);
-    rlRot.setSelectedSensorPosition(0);
-    rrRot.setSelectedSensorPosition(0);
-  }
-
-  public void updateGyro() {
-    gyro.getYawPitchRoll(gyroArray);
-  }
-
-  public double getGyro() {
-    updateGyro();
-    double angle = -gyroArray[0];
-    angle %= 360;
-    return angle;
-  }
-
+  public double getRot(PS4Controller gp) {
+    return gp.getRightXAxis();
+  } 
   
   @Override
   public void initDefaultCommand() {

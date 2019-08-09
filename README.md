@@ -4,5 +4,6 @@ Contributors tefloyd1215@gmail.com
 Based on Ether's Swerve Whitepaper
 
 TODO
--Eventally Move all Swere Calculations to frc.util.SwerveModule.java
+-Make it work...
 -Fix "Gap" between 0 and 360 degrees
+-Add Inverse Drive Functionality for Quick Reverse

@@ -35,11 +35,13 @@ public class TeleOpDrive extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.drivetrain.resetPose();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.drivetrain.resetPose();
   }
 }
