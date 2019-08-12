@@ -1,6 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.buttons.Button;
 import frc.controllers.PS4Controller;
+import frc.robot.commands.ResetPose;
 
 public class OI {
 	//Calls the Gamepad Classes: Defines gp and cp for the robot
@@ -18,12 +20,11 @@ public class OI {
 
 	public OI() {
 		//Driver Buttons
-
+		Button driverX = operatorPad.getButtonX();
 		//Operator Buttons
 
 		//driver Controls
-
-
+		
 		//Operator Controls
 
 	}

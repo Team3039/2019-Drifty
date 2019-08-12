@@ -83,7 +83,7 @@ public class Drivetrain extends Subsystem {
   //Set Each Module to their Original Position
   public void resetPose() {
     for(int i = 0; i < 4; i++) {
-      drivetrain[i].set(0, 0);
+      drivetrain[i].set(0, 90);
     }
   }
 
