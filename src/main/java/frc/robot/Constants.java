@@ -6,8 +6,9 @@ package frc.robot;
 public class Constants {
 
     //Drivetrain 
-    public static final double throttle = .5;
-    public static final double rot = .7;
+    public static final double fwdGain = .8;
+    public static final double strGain = .8;
+    public static final double rotGain = .7;
 
     //Dimensions
     public static final double Legnth = 22;

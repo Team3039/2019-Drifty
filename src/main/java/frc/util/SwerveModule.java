@@ -20,7 +20,7 @@ public class SwerveModule {
     public SwerveModule(TalonSRX drive, TalonSRX rotation) { 
         this.drive = drive;
         this.rotation = rotation;
-        rotationSetup(rotation);
+        rotationSetup();
         drive.setNeutralMode(NeutralMode.Brake);
         rotation.setNeutralMode(NeutralMode.Brake);
     }
@@ -61,11 +61,12 @@ public class SwerveModule {
         drive.setInverted(InvertType.InvertMotorOutput);
     }
 
-    public void rotationSetup(TalonSRX talon) {
-        talon.configSelectedFeedbackCoefficient(.2174); //Allows User to pass only an angle to the Rotation Motor
-        talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder); 
-        talon.setSelectedSensorPosition(0);
-        talon.config_kP(0, 15);
+    public void rotationSetup() {
+        rotation.configSelectedFeedbackCoefficient(.2174); //Allows User to pass only an angle to the Rotation Motor
+        rotation.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder); 
+        rotation.setSelectedSensorPosition(0);
+        rotation.config_kP(0, 20);
+        rotation.config_kD(0, 200);
     }
     
     public void zeroSensors() {

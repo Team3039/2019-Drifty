@@ -1,13 +1,5 @@
 {
   "vscode_custom_css.policy": true,
-  "vscode_custom_css.imports": [
-      "file:///C:/Users/Thomas/visualstudio-workspace/2019-Drifty/.vscode/WildcatRobotics.css"
-      ],
-  "workbench.colorCustomizations": {
-        "statusBar.background" : "#ff000050",
-        "statusBar.noFolderBackground" : "#ff000050",
-        "statusBar.debuggingBackground": "#ff000050"
-  },
   "java.configuration.updateBuildConfiguration": "automatic",
   "files.exclude": {
     "**/.git": true,

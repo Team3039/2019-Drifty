@@ -45,9 +45,15 @@ public class Drivetrain extends Subsystem {
     }
   }
 
-  public void swerveCalculations(double joystickFwd, double joystickStr, double joystickRot) {
+  public void swerveCalculations(double Fwd, double Str, double Rot) {
 
-    /*  
+    //Multiply Inputs by Gain
+    Fwd *= Constants.fwdGain;
+    Str *= Constants.strGain;
+    Rot *= Constants.rotGain;
+
+    /*   Variable Diagram     
+    *
     *   1 d     c 0
     *   b-|-----|-b
     *     |  ^  | 
@@ -58,32 +64,30 @@ public class Drivetrain extends Subsystem {
 
     //Ether Swerve Calculations
     double angleRadians = Math.toRadians(getGyro());
-    double temp = joystickFwd * Math.cos(angleRadians) + joystickStr * Math.sin(angleRadians);
-    double Str  = -joystickFwd * Math.sin(angleRadians) + joystickStr * Math.cos(angleRadians);
-    double Fwd = temp;
+    double temp = Fwd * Math.cos(angleRadians) + Str * Math.sin(angleRadians);
+    Str  = -Fwd * Math.sin(angleRadians) + Str * Math.cos(angleRadians);
+    Fwd = temp;
 
-    double a = Str - joystickRot*(Constants.Legnth/Constants.Diameter);
-    double b = Str + joystickRot*(Constants.Legnth/Constants.Diameter);
-    double c = Fwd - joystickRot*(Constants.Width/Constants.Diameter);
-    double d = Fwd + joystickRot*(Constants.Width/Constants.Diameter); 
+    double a = Str - Rot*(Constants.Legnth/Constants.Width);
+    double b = Str + Rot*(Constants.Legnth/Constants.Width);
+    double c = Fwd - Rot*(Constants.Width/Constants.Legnth);
+    double d = Fwd + Rot*(Constants.Width/Constants.Legnth); 
+
+    wheelAngles[0] = Math.atan2(b,c)*180/Math.PI;
+    wheelAngles[1] = Math.atan2(b,d)*180/Math.PI; 
+    wheelAngles[2] = Math.atan2(a,d)*180/Math.PI;
+    wheelAngles[3] = Math.atan2(a,c)*180/Math.PI;
 
     wheelSpeeds[0] = Math.sqrt((b*b)+(c*c));           
-    wheelAngles[0] = Math.atan2(b,c)*180/Math.PI;
-
     wheelSpeeds[1] = Math.sqrt((b*b)+(d*d));          
-    wheelAngles[1] = Math.atan2(b,d)*180/Math.PI; 
- 
     wheelSpeeds[2] = Math.sqrt((a*a)+(d*d));          
-    wheelAngles[2] = Math.atan2(a,d)*180/Math.PI;
-
     wheelSpeeds[3] = Math.sqrt((a*a)+(c*c));          
-    wheelAngles[3] = Math.atan2(a,c)*180/Math.PI;
   }
 
   //Set Each Module to their Original Position
   public void resetPose() {
     for(int i = 0; i < 4; i++) {
-      drivetrain[i].set(0, 90);
+      drivetrain[i].set(0, 0);
     }
   }
 
@@ -126,6 +130,12 @@ public class Drivetrain extends Subsystem {
 
   }
   
+  public void stopDrive() {
+    for(int i = 0; i < 4; i++) {
+      drivetrain[i].setModuleThrottle(0);
+    }
+  }
+
   public double getFwd(PS4Controller gp) {
     return gp.getLeftYAxis();
   } 

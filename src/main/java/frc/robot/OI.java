@@ -23,8 +23,8 @@ public class OI {
 		Button driverX = operatorPad.getButtonX();
 		//Operator Buttons
 
-		//driver Controls
-		
+		// driver Controls
+		driverX.whenPressed(new ResetPose());
 		//Operator Controls
 
 	}
