@@ -64,7 +64,9 @@ public class Drivetrain extends Subsystem {
 
     //Ether Swerve Calculations
     double angleRadians = Math.toRadians(getGyro());
-    double temp = Fwd * Math.cos(angleRadians) + Str * Math.sin(angleRadians);
+    double temp = Fwd * Math.cos(angleRadians) +
+    Str * Math.sin(angleRadians);
+
     Str  = -Fwd * Math.sin(angleRadians) + Str * Math.cos(angleRadians);
     Fwd = temp;
 
