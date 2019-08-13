@@ -27,7 +27,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Module", drivetrain.rearLeft.getModuleAngle());
+    SmartDashboard.putNumber("RL", drivetrain.rearLeft.getModuleAngle());
+    SmartDashboard.putNumber("RR", drivetrain.rearRight.getModuleAngle());
+    SmartDashboard.putNumber("FR", drivetrain.frontRight.getModuleAngle());
+    SmartDashboard.putNumber("FL", drivetrain.frontLeft.getModuleAngle());
+
     SmartDashboard.putNumber("Gyro", drivetrain.getGyro());
   }
 
